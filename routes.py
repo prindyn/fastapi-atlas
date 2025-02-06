@@ -17,3 +17,10 @@ async def create_user(user: User, service: UserService = Depends(get_service)):
 @router.get("/")
 async def list_users(service: UserService = Depends(get_service)):
     return await service.get_all_users()
+
+@router.get("/{user_id}")
+async def read_user(user_id: str, service: UserService = Depends(get_service)):
+    user_data = await service.get_user_by_id(user_id)
+    if not user_data:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user_data

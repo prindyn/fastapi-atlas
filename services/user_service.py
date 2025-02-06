@@ -2,6 +2,7 @@ from fastapi import Depends
 from models.user import User
 from db.connection import MongoDB, get_db
 from utils.serializers import individual_serial, individual_serials
+from bson import ObjectId
 
 
 class UserService:
@@ -16,6 +17,9 @@ class UserService:
     async def get_all_users(self):
         return individual_serials(await self.collection.find().to_list(100))
     
+    async def get_user_by_id(self, id: str):
+        return individual_serial(await self.collection.find_one({"_id": ObjectId(id)}))
+
     async def get_user_by_email(self, email: str):
         return individual_serial(await self.collection.find_one({"email": email}))
 
